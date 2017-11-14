@@ -30,12 +30,22 @@ namespace StarryNight.Model
             }
         }
 
+        /// <summary>
+        /// Makes some changes to the play area: Makes one bee move and adds or removes one star.
+        /// </summary>
         public void Update()
         {
             MoveOneBee();
             AddOrRemoveAStar();
         }
 
+        /// <summary>
+        /// DEPRECATED
+        /// Checks if two rectangles overlap. Use rectangle.IntersectsWith() instead.
+        /// </summary>
+        /// <param name="r1">The first rectangle</param>
+        /// <param name="r2">The second rectangle</param>
+        /// <returns></returns>
         private static bool RectsOverlap(Rect r1, Rect r2)
         {
             r1.Intersect(r2);
@@ -46,6 +56,10 @@ namespace StarryNight.Model
             return false;
         }
 
+        /// <summary>
+        /// Updates the bees when the playarea resizes.
+        /// Moves all of the bees, if none are available spawns a random number of new bees.
+        /// </summary>
         private void CreateBees()
         {
             if (_playAreaSize == Size.Empty) return;
@@ -73,6 +87,10 @@ namespace StarryNight.Model
             }
         }
 
+        /// <summary>
+        /// Updates the stars when the playarea resizes.
+        /// Finds a new spot for each star or spawns a random number of stars of none are available yet.
+        /// </summary>
         private void CreateStars()
         {
             if (_playAreaSize == Size.Empty) return;
@@ -97,6 +115,9 @@ namespace StarryNight.Model
             }
         }
 
+        /// <summary>
+        /// Creates one star. Does nothing if not enough space is available for another star.
+        /// </summary>
         private void CreateAStar()
         {
             if (TryFindNonOverlappingPoint(StarSize, out Point location))
@@ -107,6 +128,14 @@ namespace StarryNight.Model
             }
         }
 
+        /// <summary>
+        /// Tries to find one point, where a new sprite can be spanwed without overlapping any other sprite
+        /// or extending over the playarea's borders.
+        /// </summary>
+        /// <param name="size">The size of the sprite to spawn.</param>
+        /// <param name="point">A point where the sprite can be spawned, if available.</param>
+        /// <returns>Returns true, if at least one spawnpoint is available. Returns false if there is not enough
+        /// space to spawn the sprite.</returns>
         private bool TryFindNonOverlappingPoint(Size size, out Point point)
         {
             List<Rect> sprites = new List<Rect>();
@@ -133,6 +162,11 @@ namespace StarryNight.Model
             }
         }
 
+        /// <summary>
+        /// Move the specified bee, or, if none is specified a random one, to a random point where it will not overlap
+        /// any other sprite. Does nothing if not enough space for the bee in question is available.
+        /// </summary>
+        /// <param name="bee">The bee to move.</param>
         private void MoveOneBee(Bee bee = null)
         {
             if (_bees.Count == 0) return;
@@ -146,6 +180,10 @@ namespace StarryNight.Model
             }
         }
 
+        /// <summary>
+        /// Adds or removes a star. If there are less than 5 stars present, always adds one. If there are more than 20
+        /// present, always remove one. Otherwise 50/50% chance to add or remove one.
+        /// </summary>
         private void AddOrRemoveAStar()
         {
             if (_stars.Count < 5 || (_stars.Count < 20 && _random.Next(2) == 0))
